@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Me ♡</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffe4f1 25%, #ffd4e8 50%, #ffc4e0 75%, #ffb4d8 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+        }
+
+        /* Envelope */
+        .envelope-wrapper {
+            position: relative;
+            width: 320px;
+            height: 240px;
+            margin: 0 auto 40px;
+            transition: all 0.6s ease;
+        }
+
+        .envelope {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f8ff 100%);
+            border: 3px solid #ff69b4;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(255, 105, 180, 0.3);
+            overflow: hidden;
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(135deg, #ffffff 0%, #fff5f9 100%);
+            border: 3px solid #ff69b4;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            transform-origin: top center;
+            transition: transform 0.8s ease;
+            z-index: 3;
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+        }
+
+        .envelope.open .envelope-flap {
+            transform: rotateX(180deg);
+        }
+
+        /* Paper inside envelope */
+        .paper {
+            position: absolute;
+            width: 80%;
+            height: 70%;
+            background: white;
+            border: 2px solid #ffb4d8;
+            border-radius: 5px;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            opacity: 0;
+            transition: all 1s ease;
+        }
+
+        .envelope.open .paper {
+            animation: paperSlide 1.5s ease forwards;
+        }
+
+        @keyframes paperSlide {
+            0% {
+                top: 60%;
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            50% {
+                top: 20%;
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                top: -100%;
+                opacity: 0;
+                transform: translate(-50%, -200%) scale(1.2);
+            }
+        }
+
+        /* Heart Explosion */
+        .heart-explosion {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 9999;
+            width: 0;
+            height: 0;
+        }
+
+        .explosion-heart {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            font-size: 50px;
+            color: #ff69b4;
+            text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff;
+            opacity: 0;
+            animation: explode 2s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Buttons */
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            font-size: 18px;
+            font-weight: bold;
+            border: 3px solid #ff69b4;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Georgia', serif;
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+        }
+
+        .btn-open {
+            background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+            color: white;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            position: relative;
+        }
+
+        .btn-open.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .btn-open:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.5);
+        }
+
+        .btn-dodge {
+            background: white;
+            color: #ff69b4;
+            position: relative;
+        }
+
+        /* Arrow message below button */
+        .arrow-message {
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            color: #ff69b4;
+            padding: 10px 15px;
+            border-radius: 15px;
+            border: 2px solid #ff69b4;
+            font-size: 14px;
+            font-weight: bold;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        .arrow-message.show {
+            opacity: 1;
+        }
+
+        /* Letter */
+        .letter-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .letter-container.show {
+            display: flex;
+        }
+
+        .letter {
+            background: linear-gradient(135deg, #fff9fc 0%, #ffffff 100%);
+            border: 5px solid #ffb4d8;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(255, 105, 180, 0.4);
+            position: relative;
+            animation: slideIn 0.6s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .letter-close {
+            position: sticky;
+            top: 10px;
+            float: right;
+            font-size: 30px;
+            cursor: pointer;
+            color: #ff69b4;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            background: white;
+            z-index: 10;
+            margin-bottom: 10px;
+        }
+
+        .letter-close:hover {
+            background: #ffe4f1;
+            transform: rotate(90deg);
+        }
+
+        .photos-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            min-height: 250px;
+        }
+
+        .photo-frame {
+            width: 280px;
+            height: 200px;
+            border: 4px solid #ff69b4;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(255, 105, 180, 0.3);
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff69b4;
+            font-style: italic;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .photo-frame:first-child {
+            transform: rotate(-8deg);
+            z-index: 2;
+        }
+
+        .photo-frame:last-child {
+            transform: rotate(8deg);
+            z-index: 1;
+        }
+
+        .photo-frame:hover {
+            z-index: 10;
+            transform: rotate(0deg) scale(1.05);
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .letter-content {
+            background: white;
+            border: 3px dashed #ffb4d8;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 20px;
+            line-height: 1.8;
+            color: #333;
+            font-size: 16px;
+            text-align: left;
+            box-shadow: inset 0 0 20px rgba(255, 182, 216, 0.2);
+        }
+
+        .letter-content::before {
+            content: '♡';
+            position: absolute;
+            top: 380px;
+            left: 30px;
+            font-size: 40px;
+            color: #ffe4f1;
+            opacity: 0.5;
+        }
+
+        .letter-content::after {
+            content: '♡';
+            position: absolute;
+            top: 380px;
+            right: 30px;
+            font-size: 40px;
+            color: #ffe4f1;
+            opacity: 0.5;
+        }
+
+        .letter-title {
+            text-align: center;
+            color: #ff1493;
+            font-size: 32px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(255, 105, 180, 0.3);
+            clear: both;
+        }
+
+        /* Surprise Button */
+        .surprise-btn-container {
+            text-align: center;
+            margin-top: 30px;
+            padding-bottom: 20px;
+        }
+
+        .btn-surprise {
+            background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+            color: white;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border: 3px solid #ff1493;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Georgia', serif;
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+        }
+
+        .btn-surprise:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.5);
+        }
+
+        /* Surprise Page */
+        .surprise-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffe4f1 25%, #ffd4e8 50%, #ffc4e0 75%, #ffb4d8 100%);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        .surprise-page.show {
+            display: flex;
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .surprise-content {
+            text-align: center;
+            animation: scaleIn 0.6s ease;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .surprise-gif {
+            width: 400px;
+            height: 400px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(255, 105, 180, 0.5);
+            margin-bottom: 30px;
+            object-fit: cover;
+        }
+
+        .surprise-message {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ff1493;
+            text-shadow: 2px 2px 4px rgba(255, 105, 180, 0.3);
+            margin-bottom: 15px;
+        }
+
+        .surprise-submessage {
+            font-size: 24px;
+            color: #ff69b4;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .envelope-wrapper {
+                width: 280px;
+                height: 210px;
+            }
+
+            .letter {
+                padding: 30px 20px;
+            }
+
+            .photo-frame {
+                width: 100%;
+                max-width: 280px;
+                margin: 10px 0 !important;
+            }
+
+            .photo-frame:first-child,
+            .photo-frame:last-child {
+                transform: rotate(0deg);
+            }
+
+            .photos-container {
+                flex-direction: column;
+            }
+
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .arrow-message {
+                bottom: -60px;
+            }
+
+            .surprise-gif {
+                width: 300px;
+                height: 300px;
+            }
+
+            .surprise-message {
+                font-size: 28px;
+            }
+
+            .surprise-submessage {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="envelope-wrapper">
+            <div class="envelope" id="envelope">
+                <div class="paper"></div>
+                <div class="envelope-flap"></div>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button class="btn btn-open" id="openBtn">Open Me ♡</button>
+            <button class="btn btn-dodge" id="dodgeBtn">Maybe Later...</button>
+            <div class="arrow-message" id="arrowMessage">Eme lang eto talaga yung button</div>
+        </div>
+    </div>
+
+    <div class="heart-explosion" id="heartExplosion"></div>
+
+    <div class="letter-container" id="letterContainer">
+        <div class="letter">
+            <div class="letter-close" id="closeBtn">×</div>
+            <h1 class="letter-title">To Someone Special ♡</h1>
+
+            <div class="photos-container">
+                <div class="photo-frame">
+                    <span>Photo 1<br><img src="image1.png" alt="Us"></span>
+                </div>
+                <div class="photo-frame">
+                    <span>Photo 2<br><img src="image2.png" alt="Us"></span>
+                </div>
+            </div>
+
+            <div class="letter-content">
+                <p><strong>Dear Ahri,</strong></p>
+                <br>
+                <p>Our first meet wasn't really expected, but it was one of the most memorable and beautiful moment of my life. I was really happy that time, and it became the beginning of something special</p>
+                <br>
+                <p>Couple challenge? Not only that, meeting you was the most beautiful thing that ever happened to me. You've made my life so much brighter and more meaningful. Hanggang ngayon masaya parin naman ako syempre, you're still letting me feel your presence and having some small moments together that make me smile. Yung mga chismis natin together, our disappointments to those, our laughs, everything HAHAHAHAHAHA. Ang cute lang. I also wanna thank you kasi nakilala kita and of course gaya nga ng sinabi ko before I still want to know you more and I hope this doesn't make you feel uncomfortable or anything. I just want to say that I'm so grateful to have you in my life and I hope we can continue to get more chismis and talk about it together. We trade, good trade. HAHAHAHAHAHAHAHAHA</p>
+                <br>
+                <p>I have so much to tell you pero hindi ko na siya mabuo sa isip ko, kasi kinakabahan ako kung kaya ko ba talagang isend to sayo HAHAHAHAHA pero kung nababasa mo na 'tong letter na 'to, ibig sabihin nabigay ko na siya sayo. :P</p>
+                <br>
+                <p style="text-align: right;"><strong>Yours truly,<br>Eis ♡</strong></p>
+            </div>
+
+            <div class="surprise-btn-container">
+                <button class="btn-surprise" id="surpriseBtn">Surprise Button Here</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Surprise Page -->
+    <div class="surprise-page" id="surprisePage">
+        <div class="surprise-content">
+            <img src="https://media.tenor.com/0cNM_9li440AAAAj/dudu-giving-flowers-bubu-flowers.gif" alt="Flowers" class="surprise-gif">
+            <!-- Replace with your own GIF URL: https://media.giphy.com/media/YOUR_GIF_ID/giphy.gif -->
+            <div class="surprise-message">Flowers for you! 💐</div>
+            <div class="surprise-submessage">This is not much but it's from the heart! Happy Valentine's Day! ♡</div>
+        </div>
+    </div>
+
+    <!-- Audio Player -->
+    <audio id="bgMusic" loop>
+        <source src="nothing.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const openBtn = document.getElementById('openBtn');
+        const dodgeBtn = document.getElementById('dodgeBtn');
+        const envelope = document.getElementById('envelope');
+        const envelopeWrapper = document.querySelector('.envelope-wrapper');
+        const letterContainer = document.getElementById('letterContainer');
+        const closeBtn = document.getElementById('closeBtn');
+        const bgMusic = document.getElementById('bgMusic');
+        const heartExplosion = document.getElementById('heartExplosion');
+        const arrowMessage = document.getElementById('arrowMessage');
+        const surpriseBtn = document.getElementById('surpriseBtn');
+        const surprisePage = document.getElementById('surprisePage');
+
+        let musicPlaying = false;
+
+        // Auto-play music with fade in
+        window.addEventListener('load', () => {
+            bgMusic.volume = 0;
+            bgMusic.play().then(() => {
+                musicPlaying = true;
+                let volume = 0;
+                const fadeIn = setInterval(() => {
+                    if (volume < 1) {
+                        volume += 0.05;
+                        bgMusic.volume = Math.min(volume, 1);
+                    } else {
+                        clearInterval(fadeIn);
+                    }
+                }, 100);
+            }).catch(err => {
+                console.log('Autoplay prevented, waiting for user interaction');
+            });
+        });
+
+        // Show real button after 12 seconds
+        setTimeout(() => {
+            openBtn.classList.add('show');
+            arrowMessage.classList.add('show');
+        }, 12000);
+
+        // Heart explosion function
+        function createHeartExplosion() {
+            const heartsCount = 40;
+            for (let i = 0; i < heartsCount; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'explosion-heart';
+                heart.textContent = '💕';
+
+                const angle = (Math.PI * 2 * i) / heartsCount;
+                const distance = 300 + Math.random() * 300;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+
+                heart.style.setProperty('--tx', `${tx}px`);
+                heart.style.setProperty('--ty', `${ty}px`);
+                heart.style.animationDelay = `${Math.random() * 0.2}s`;
+
+                heartExplosion.appendChild(heart);
+
+                setTimeout(() => heart.remove(), 2000);
+            }
+        }
+
+        // Open envelope and show letter
+        openBtn.addEventListener('click', () => {
+            envelope.classList.add('open');
+            createHeartExplosion();
+
+            if (!musicPlaying) {
+                bgMusic.volume = 0;
+                bgMusic.play().then(() => {
+                    musicPlaying = true;
+                    let volume = 0;
+                    const fadeIn = setInterval(() => {
+                        if (volume < 1) {
+                            volume += 0.05;
+                            bgMusic.volume = Math.min(volume, 1);
+                        } else {
+                            clearInterval(fadeIn);
+                        }
+                    }, 100);
+                });
+            }
+
+            setTimeout(() => {
+                letterContainer.classList.add('show');
+            }, 1500);
+        });
+
+        // Close letter
+        closeBtn.addEventListener('click', () => {
+            letterContainer.classList.remove('show');
+        });
+
+        // Surprise button
+        surpriseBtn.addEventListener('click', () => {
+            letterContainer.classList.remove('show');
+            surprisePage.classList.add('show');
+        });
+
+        // Dodge button - moves away from cursor but stays outside envelope
+        dodgeBtn.addEventListener('mouseover', (e) => {
+            const btn = e.target;
+            const envelopeRect = envelopeWrapper.getBoundingClientRect();
+            
+            let randomX, randomY;
+            let attempts = 0;
+            const maxAttempts = 50;
+            
+            do {
+                randomX = Math.random() * (window.innerWidth - btn.offsetWidth - 40);
+                randomY = Math.random() * (window.innerHeight - btn.offsetHeight - 40);
+                attempts++;
+                
+                const btnRight = randomX + btn.offsetWidth;
+                const btnBottom = randomY + btn.offsetHeight;
+                
+                const overlapsEnvelope = !(
+                    randomX > envelopeRect.right ||
+                    btnRight < envelopeRect.left ||
+                    randomY > envelopeRect.bottom ||
+                    btnBottom < envelopeRect.top
+                );
+                
+                if (!overlapsEnvelope) break;
+                
+            } while (attempts < maxAttempts);
+
+            btn.style.position = 'fixed';
+            btn.style.left = randomX + 'px';
+            btn.style.top = randomY + 'px';
+            btn.style.transition = 'all 0.3s ease';
+        });
+
+        // Close letter when clicking outside
+        letterContainer.addEventListener('click', (e) => {
+            if (e.target === letterContainer) {
+                letterContainer.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
