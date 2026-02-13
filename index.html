@@ -184,7 +184,16 @@
         .btn-dodge {
             background: white;
             color: #ff69b4;
-            position: relative;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.5s ease;
+        }
+
+        .btn-dodge.hide {
+            opacity: 0;
+            pointer-events: none;
         }
 
         /* Arrow message below button */
@@ -612,10 +621,11 @@
             });
         });
 
-        // Show real button after 12 seconds
+        // Show real button after 12 seconds and hide Maybe Later button
         setTimeout(() => {
             openBtn.classList.add('show');
             arrowMessage.classList.add('show');
+            dodgeBtn.classList.add('hide'); // Hide Maybe Later button
         }, 12000);
 
         // Heart explosion function
