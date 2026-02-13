@@ -189,7 +189,14 @@
         .btn-dodge {
             background: white;
             color: #ff69b4;
-            position: relative;
+            position: fixed;
+            left: 50%;
+            bottom: 100px;
+            transform: translateX(-50%);
+            transition: opacity 0.5s ease;
+            z-index: 100;
+            touch-action: none;
+            user-select: none;
         }
 
         .btn-dodge.hide {
@@ -646,7 +653,7 @@
                 <br>
                 <p>Couple challenge? Not only that, meeting you was the most beautiful thing that ever happened to me. You've made my life so much brighter and more meaningful. Hanggang ngayon masaya parin naman ako syempre, you're still letting me feel your presence and having some small moments together that make me smile. Yung mga chismis natin together, our disappointments to those, our laughs, everything HAHAHAHAHAHA. Ang cute lang. I also wanna thank you kasi nakilala kita and of course gaya nga ng sinabi ko before I still want to know you more and I hope this doesn't make you feel uncomfortable or anything. I just want to say that I'm so grateful to have you in my life and I hope we can continue to get more chismis and talk about it together. We trade, good trade. HAHAHAHAHAHAHAHAHA</p>
                 <br>
-                <p>I have so much to tell you pero hindi ko na siya mabuo sa isip ko, kasi kinakabahan ako kung kaya ko ba talagang isend to sayo HAHAHAHAHA pero kung nababasa mo na 'tong letter na 'to, ibig sabihin nabigay ko na siya sayo. You might want to finish the song or click mo yung surprise after mo mabasa, things are up you! ><</p>
+                <p>I have so much to tell you pero hindi ko na siya mabuo sa isip ko, kasi kinakabahan ako kung kaya ko ba talagang isend to sayo HAHAHAHAHA pero kung nababasa mo na 'tong letter na 'to, ibig sabihin nabigay ko na siya sayo. :P</p>
                 <br>
                 <p style="text-align: right;"><strong>Yours truly,<br>Eis ♡</strong></p>
             </div>
@@ -773,9 +780,9 @@
             surprisePage.classList.add('show');
         });
 
-        // Dodge button - moves away from cursor but stays outside envelope
-        dodgeBtn.addEventListener('mouseover', (e) => {
-            const btn = e.target;
+        // Dodge button - moves away from cursor/touch
+        function moveButton() {
+            const btn = dodgeBtn;
             const envelopeRect = envelopeWrapper.getBoundingClientRect();
             
             let randomX, randomY;
@@ -805,7 +812,20 @@
             btn.style.left = randomX + 'px';
             btn.style.top = randomY + 'px';
             btn.style.transition = 'all 0.3s ease';
+        }
+
+        // Desktop: mouseover
+        dodgeBtn.addEventListener('mouseenter', (e) => {
+            if (window.innerWidth > 768) {
+                moveButton();
+            }
         });
+
+        // Mobile: touchstart (with preventDefault to avoid growing issue)
+        dodgeBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveButton();
+        }, { passive: false });
 
         // Close letter when clicking outside
         letterContainer.addEventListener('click', (e) => {
