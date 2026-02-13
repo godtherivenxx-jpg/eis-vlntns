@@ -198,8 +198,13 @@
             position: relative;
             touch-action: none;
             user-select: none;
-            min-width: 180px;
-            width: auto;
+            width: fit-content;
+            min-width: max-content;
+            padding: 12px 30px;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .btn-dodge.hide {
@@ -802,28 +807,35 @@
             surprisePage.classList.add('show');
         });
 
-        // IMPROVED DODGE BUTTON - Prevents stretching on mobile
+        // IMPROVED DODGE BUTTON - Prevents text cutoff
         function moveButton() {
             const btn = dodgeBtn;
             const envelopeRect = envelopeWrapper.getBoundingClientRect();
             
-            // CAPTURE ORIGINAL SIZE BEFORE MOVING (only once)
-            if (!btn.dataset.originalWidth) {
-                const computedStyle = window.getComputedStyle(btn);
-                const originalWidth = btn.offsetWidth;
-                const originalHeight = btn.offsetHeight;
+            // CAPTURE ORIGINAL SIZE BEFORE ANY CHANGES (only once)
+            if (!btn.dataset.captured) {
+                // Force the button to its natural size first
+                btn.style.width = 'auto';
+                btn.style.whiteSpace = 'nowrap';
                 
-                btn.dataset.originalWidth = originalWidth + 'px';
-                btn.dataset.originalHeight = originalHeight + 'px';
+                // Get the natural dimensions with full text visible
+                const rect = btn.getBoundingClientRect();
+                const computedStyle = window.getComputedStyle(btn);
+                
+                // Add extra padding to ensure text never cuts off
+                const extraPadding = 10;
+                btn.dataset.originalWidth = (rect.width + extraPadding) + 'px';
+                btn.dataset.originalHeight = rect.height + 'px';
                 btn.dataset.originalPadding = computedStyle.padding;
                 btn.dataset.originalFontSize = computedStyle.fontSize;
+                btn.dataset.captured = 'true';
             }
             
             let randomX, randomY;
             let attempts = 0;
             const maxAttempts = 50;
-            const btnWidth = parseInt(btn.dataset.originalWidth);
-            const btnHeight = parseInt(btn.dataset.originalHeight);
+            const btnWidth = parseFloat(btn.dataset.originalWidth);
+            const btnHeight = parseFloat(btn.dataset.originalHeight);
             
             do {
                 randomX = Math.random() * (window.innerWidth - btnWidth - 40) + 20;
@@ -844,23 +856,24 @@
                 
             } while (attempts < maxAttempts);
 
-            // APPLY FIXED DIMENSIONS TO PREVENT STRETCHING
+            // Apply fixed dimensions to lock the button size
             btn.style.position = 'fixed';
             btn.style.width = btn.dataset.originalWidth;
             btn.style.height = btn.dataset.originalHeight;
             btn.style.minWidth = btn.dataset.originalWidth;
-            btn.style.maxWidth = btn.dataset.originalWidth;
-            btn.style.minHeight = btn.dataset.originalHeight;
-            btn.style.maxHeight = btn.dataset.originalHeight;
-            btn.style.whiteSpace = 'nowrap';
-            btn.style.overflow = 'hidden';
-            btn.style.textOverflow = 'ellipsis';
             btn.style.padding = btn.dataset.originalPadding;
             btn.style.fontSize = btn.dataset.originalFontSize;
+            btn.style.whiteSpace = 'nowrap';
+            btn.style.overflow = 'visible';
+            btn.style.textOverflow = 'clip';
+            btn.style.display = 'inline-flex';
+            btn.style.alignItems = 'center';
+            btn.style.justifyContent = 'center';
             btn.style.left = randomX + 'px';
             btn.style.top = randomY + 'px';
             btn.style.transition = 'all 0.3s ease';
-            btn.style.transform = 'translate(0, 0)'; // Reset any transforms
+            btn.style.transform = 'none';
+            btn.style.boxSizing = 'border-box';
         }
 
         // Desktop: mouseover
@@ -870,15 +883,22 @@
             }
         });
 
-        // Mobile: touchstart (with preventDefault to avoid stretching)
+        // Mobile: touchstart
         dodgeBtn.addEventListener('touchstart', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             moveButton();
         }, { passive: false });
 
-        // Additional touch handler for better mobile support
+        // Prevent additional touch events that might cause issues
         dodgeBtn.addEventListener('touchmove', (e) => {
             e.preventDefault();
+            e.stopPropagation();
+        }, { passive: false });
+
+        dodgeBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
         }, { passive: false });
 
         // Close letter when clicking outside
