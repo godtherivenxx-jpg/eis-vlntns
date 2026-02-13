@@ -192,6 +192,8 @@
             position: relative;
             touch-action: none;
             user-select: none;
+            white-space: nowrap;
+            min-width: max-content;
         }
 
         .btn-dodge.hide {
@@ -781,10 +783,12 @@
             const btn = dodgeBtn;
             const envelopeRect = envelopeWrapper.getBoundingClientRect();
             
-            // CAPTURE ORIGINAL SIZE BEFORE MOVING
+            // CAPTURE ORIGINAL SIZE BEFORE MOVING (only once)
             if (!btn.dataset.originalWidth) {
+                const computedStyle = window.getComputedStyle(btn);
                 btn.dataset.originalWidth = btn.offsetWidth + 'px';
                 btn.dataset.originalHeight = btn.offsetHeight + 'px';
+                btn.dataset.originalPadding = computedStyle.padding;
             }
             
             let randomX, randomY;
@@ -811,8 +815,10 @@
             } while (attempts < maxAttempts);
 
             btn.style.position = 'fixed';
-            btn.style.width = btn.dataset.originalWidth;      // PREVENTS WIDTH STRETCH
-            btn.style.height = btn.dataset.originalHeight;    // PREVENTS HEIGHT STRETCH
+            btn.style.width = btn.dataset.originalWidth;
+            btn.style.height = btn.dataset.originalHeight;
+            btn.style.minWidth = btn.dataset.originalWidth;      // PREVENTS SHRINKING
+            btn.style.whiteSpace = 'nowrap';                     // PREVENTS TEXT WRAPPING
             btn.style.left = randomX + 'px';
             btn.style.top = randomY + 'px';
             btn.style.transition = 'all 0.3s ease';
@@ -825,7 +831,7 @@
             }
         });
 
-        // Mobile: touchstart (with preventDefault to avoid growing issue)
+        // Mobile: touchstart
         dodgeBtn.addEventListener('touchstart', (e) => {
             e.preventDefault();
             moveButton();
@@ -840,7 +846,3 @@
     </script>
 </body>
 </html>
-
-
-
-
