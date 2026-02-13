@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Open Me ♡</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -20,6 +21,7 @@
             align-items: center;
             overflow-x: hidden;
             padding: 20px;
+            position: relative;
         }
 
         .container {
@@ -165,6 +167,11 @@
             transition: all 0.3s ease;
             font-family: 'Georgia', serif;
             box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+            white-space: nowrap;
+            display: inline-block;
+            text-align: center;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .btn-open {
@@ -181,20 +188,24 @@
             pointer-events: auto;
         }
 
-        .btn-open:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.5);
+        .btn-open:active {
+            transform: scale(0.95);
         }
 
         .btn-dodge {
             background: white;
             color: #ff69b4;
             position: relative;
+            touch-action: none;
+            user-select: none;
+            min-width: fit-content;
+            width: auto;
         }
 
         .btn-dodge.hide {
             opacity: 0;
             pointer-events: none;
+            transition: opacity 0.5s ease;
         }
 
         /* Arrow message below button */
@@ -284,9 +295,9 @@
             margin-bottom: 10px;
         }
 
-        .letter-close:hover {
+        .letter-close:active {
+            transform: scale(0.9);
             background: #ffe4f1;
-            transform: rotate(90deg);
         }
 
         .photos-container {
@@ -324,11 +335,6 @@
         .photo-frame:last-child {
             transform: rotate(8deg);
             z-index: 1;
-        }
-
-        .photo-frame:hover {
-            z-index: 10;
-            transform: rotate(0deg) scale(1.05);
         }
 
         .photo-frame img {
@@ -398,11 +404,12 @@
             transition: all 0.3s ease;
             font-family: 'Georgia', serif;
             box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+            -webkit-user-select: none;
+            user-select: none;
         }
 
-        .btn-surprise:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.5);
+        .btn-surprise:active {
+            transform: scale(0.95);
         }
 
         /* Surprise Page */
@@ -496,9 +503,8 @@
             }
 
             .btn-dodge {
-                bottom: 60px;
-                font-size: 14px;
-                padding: 10px 20px;
+                font-size: 15px;
+                padding: 12px 24px;
             }
 
             .arrow-message {
@@ -537,8 +543,8 @@
                 transform: rotate(0deg) !important;
             }
 
-            .photo-frame:hover {
-                transform: rotate(0deg) scale(1.02) !important;
+            .photo-frame:active {
+                transform: scale(0.98) !important;
             }
 
             .photos-container {
@@ -587,6 +593,11 @@
                 font-size: 14px;
             }
 
+            .btn-dodge {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+
             .letter-title {
                 font-size: 20px;
             }
@@ -602,6 +613,24 @@
 
             .surprise-submessage {
                 font-size: 16px;
+            }
+        }
+
+        /* Landscape orientation fix for mobile */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .envelope-wrapper {
+                max-width: 200px;
+                height: 150px;
+                margin-bottom: 20px;
+            }
+
+            .btn {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+
+            .letter {
+                padding: 15px 10px;
             }
         }
     </style>
@@ -646,7 +675,7 @@
                 <br>
                 <p>Couple challenge? Not only that, meeting you was the most beautiful thing that ever happened to me. You've made my life so much brighter and more meaningful. Hanggang ngayon masaya parin naman ako syempre, you're still letting me feel your presence and having some small moments together that make me smile. Yung mga chismis natin together, our disappointments to those, our laughs, everything HAHAHAHAHAHA. Ang cute lang. I also wanna thank you kasi nakilala kita and of course gaya nga ng sinabi ko before I still want to know you more and I hope this doesn't make you feel uncomfortable or anything. I just want to say that I'm so grateful to have you in my life and I hope we can continue to get more chismis and talk about it together. We trade, good trade. HAHAHAHAHAHAHAHAHA</p>
                 <br>
-                <p>I have so much to tell you pero hindi ko na siya mabuo sa isip ko, kasi kinakabahan ako kung kaya ko ba talagang isend to sayo HAHAHAHAHA pero kung nababasa mo na 'tong letter na 'to, ibig sabihin nabigay ko na siya sayo. You might want to finish the song or click mo yung surprise after mo mabasa, things are up you! ><</p>
+                <p>I have so much to tell you pero hindi ko na siya mabuo sa isip ko, kasi kinakabahan ako kung kaya ko ba talagang isend to sayo HAHAHAHAHA pero kung nababasa mo na 'tong letter na 'to, ibig sabihin nabigay ko na siya sayo. :P</p>
                 <br>
                 <p style="text-align: right;"><strong>Yours truly,<br>Eis ♡</strong></p>
             </div>
@@ -710,7 +739,7 @@
         setTimeout(() => {
             openBtn.classList.add('show');
             arrowMessage.classList.add('show');
-            dodgeBtn.classList.add('hide'); // Hide Maybe Later button
+            dodgeBtn.classList.add('hide');
         }, 12000);
 
         // Heart explosion function
@@ -773,22 +802,36 @@
             surprisePage.classList.add('show');
         });
 
-        // Dodge button - moves away from cursor but stays outside envelope
-        dodgeBtn.addEventListener('mouseover', (e) => {
-            const btn = e.target;
+        // IMPROVED DODGE BUTTON - Prevents stretching on mobile
+        function moveButton() {
+            const btn = dodgeBtn;
             const envelopeRect = envelopeWrapper.getBoundingClientRect();
+            
+            // CAPTURE ORIGINAL SIZE BEFORE MOVING (only once)
+            if (!btn.dataset.originalWidth) {
+                const computedStyle = window.getComputedStyle(btn);
+                const originalWidth = btn.offsetWidth;
+                const originalHeight = btn.offsetHeight;
+                
+                btn.dataset.originalWidth = originalWidth + 'px';
+                btn.dataset.originalHeight = originalHeight + 'px';
+                btn.dataset.originalPadding = computedStyle.padding;
+                btn.dataset.originalFontSize = computedStyle.fontSize;
+            }
             
             let randomX, randomY;
             let attempts = 0;
             const maxAttempts = 50;
+            const btnWidth = parseInt(btn.dataset.originalWidth);
+            const btnHeight = parseInt(btn.dataset.originalHeight);
             
             do {
-                randomX = Math.random() * (window.innerWidth - btn.offsetWidth - 40) + 20;
-                randomY = Math.random() * (window.innerHeight - btn.offsetHeight - 40) + 20;
+                randomX = Math.random() * (window.innerWidth - btnWidth - 40) + 20;
+                randomY = Math.random() * (window.innerHeight - btnHeight - 40) + 20;
                 attempts++;
                 
-                const btnRight = randomX + btn.offsetWidth;
-                const btnBottom = randomY + btn.offsetHeight;
+                const btnRight = randomX + btnWidth;
+                const btnBottom = randomY + btnHeight;
                 
                 const overlapsEnvelope = !(
                     randomX > envelopeRect.right ||
@@ -801,11 +844,42 @@
                 
             } while (attempts < maxAttempts);
 
+            // APPLY FIXED DIMENSIONS TO PREVENT STRETCHING
             btn.style.position = 'fixed';
+            btn.style.width = btn.dataset.originalWidth;
+            btn.style.height = btn.dataset.originalHeight;
+            btn.style.minWidth = btn.dataset.originalWidth;
+            btn.style.maxWidth = btn.dataset.originalWidth;
+            btn.style.minHeight = btn.dataset.originalHeight;
+            btn.style.maxHeight = btn.dataset.originalHeight;
+            btn.style.whiteSpace = 'nowrap';
+            btn.style.overflow = 'hidden';
+            btn.style.textOverflow = 'ellipsis';
+            btn.style.padding = btn.dataset.originalPadding;
+            btn.style.fontSize = btn.dataset.originalFontSize;
             btn.style.left = randomX + 'px';
             btn.style.top = randomY + 'px';
             btn.style.transition = 'all 0.3s ease';
+            btn.style.transform = 'translate(0, 0)'; // Reset any transforms
+        }
+
+        // Desktop: mouseover
+        dodgeBtn.addEventListener('mouseenter', (e) => {
+            if (window.innerWidth > 768) {
+                moveButton();
+            }
         });
+
+        // Mobile: touchstart (with preventDefault to avoid stretching)
+        dodgeBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveButton();
+        }, { passive: false });
+
+        // Additional touch handler for better mobile support
+        dodgeBtn.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+        }, { passive: false });
 
         // Close letter when clicking outside
         letterContainer.addEventListener('click', (e) => {
@@ -813,6 +887,15 @@
                 letterContainer.classList.remove('show');
             }
         });
+
+        // Prevent zoom on double tap (iOS Safari)
+        document.addEventListener('touchend', (e) => {
+            const now = Date.now();
+            if (now - (document.lastTap || 0) < 300) {
+                e.preventDefault();
+            }
+            document.lastTap = now;
+        }, { passive: false });
     </script>
 </body>
 </html>
