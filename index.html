@@ -190,10 +190,6 @@
             background: white;
             color: #ff69b4;
             position: relative;
-            touch-action: none;
-            user-select: none;
-            white-space: nowrap;
-            min-width: max-content;
         }
 
         .btn-dodge.hide {
@@ -503,7 +499,6 @@
                 bottom: 60px;
                 font-size: 14px;
                 padding: 10px 20px;
-                text-align: center;
             }
 
             .arrow-message {
@@ -651,7 +646,7 @@
                 <br>
                 <p>Couple challenge? Not only that, meeting you was the most beautiful thing that ever happened to me. You've made my life so much brighter and more meaningful. Hanggang ngayon masaya parin naman ako syempre, you're still letting me feel your presence and having some small moments together that make me smile. Yung mga chismis natin together, our disappointments to those, our laughs, everything HAHAHAHAHAHA. Ang cute lang. I also wanna thank you kasi nakilala kita and of course gaya nga ng sinabi ko before I still want to know you more and I hope this doesn't make you feel uncomfortable or anything. I just want to say that I'm so grateful to have you in my life and I hope we can continue to get more chismis and talk about it together. We trade, good trade. HAHAHAHAHAHAHAHAHA</p>
                 <br>
-                <p>I have so much to tell you pero hindi ko na siya mabuo sa isip ko, kasi kinakabahan ako kung kaya ko ba talagang isend to sayo HAHAHAHAHA pero kung nababasa mo na 'tong letter na 'to, ibig sabihin nabigay ko na siya sayo. :P</p>
+                <p>I have so much to tell you pero hindi ko na siya mabuo sa isip ko, kasi kinakabahan ako kung kaya ko ba talagang isend to sayo HAHAHAHAHA pero kung nababasa mo na 'tong letter na 'to, ibig sabihin nabigay ko na siya sayo. You might want to finish the song or click mo yung surprise after mo mabasa, things are up you! ><</p>
                 <br>
                 <p style="text-align: right;"><strong>Yours truly,<br>Eis ♡</strong></p>
             </div>
@@ -778,18 +773,10 @@
             surprisePage.classList.add('show');
         });
 
-        // Dodge button - moves away from cursor/touch (FIXED VERSION)
-        function moveButton() {
-            const btn = dodgeBtn;
+        // Dodge button - moves away from cursor but stays outside envelope
+        dodgeBtn.addEventListener('mouseover', (e) => {
+            const btn = e.target;
             const envelopeRect = envelopeWrapper.getBoundingClientRect();
-            
-            // CAPTURE ORIGINAL SIZE BEFORE MOVING (only once)
-            if (!btn.dataset.originalWidth) {
-                const computedStyle = window.getComputedStyle(btn);
-                btn.dataset.originalWidth = btn.offsetWidth + 'px';
-                btn.dataset.originalHeight = btn.offsetHeight + 'px';
-                btn.dataset.originalPadding = computedStyle.padding;
-            }
             
             let randomX, randomY;
             let attempts = 0;
@@ -815,27 +802,10 @@
             } while (attempts < maxAttempts);
 
             btn.style.position = 'fixed';
-            btn.style.width = btn.dataset.originalWidth;
-            btn.style.height = btn.dataset.originalHeight;
-            btn.style.minWidth = btn.dataset.originalWidth;      // PREVENTS SHRINKING
-            btn.style.whiteSpace = 'nowrap';                     // PREVENTS TEXT WRAPPING
             btn.style.left = randomX + 'px';
             btn.style.top = randomY + 'px';
             btn.style.transition = 'all 0.3s ease';
-        }
-
-        // Desktop: mouseover
-        dodgeBtn.addEventListener('mouseenter', (e) => {
-            if (window.innerWidth > 768) {
-                moveButton();
-            }
         });
-
-        // Mobile: touchstart
-        dodgeBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            moveButton();
-        }, { passive: false });
 
         // Close letter when clicking outside
         letterContainer.addEventListener('click', (e) => {
