@@ -19,17 +19,21 @@
             justify-content: center;
             align-items: center;
             overflow-x: hidden;
+            padding: 20px;
         }
 
         .container {
             text-align: center;
             position: relative;
+            width: 100%;
+            max-width: 500px;
         }
 
         /* Envelope */
         .envelope-wrapper {
             position: relative;
-            width: 320px;
+            width: 100%;
+            max-width: 320px;
             height: 240px;
             margin: 0 auto 40px;
             transition: all 0.6s ease;
@@ -148,6 +152,7 @@
             justify-content: center;
             margin-top: 20px;
             position: relative;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -184,11 +189,7 @@
         .btn-dodge {
             background: white;
             color: #ff69b4;
-            position: fixed;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            transition: opacity 0.5s ease;
+            position: relative;
         }
 
         .btn-dodge.hide {
@@ -418,6 +419,7 @@
             z-index: 2000;
             opacity: 0;
             transition: opacity 0.6s ease;
+            padding: 20px;
         }
 
         .surprise-page.show {
@@ -437,6 +439,7 @@
         .surprise-content {
             text-align: center;
             animation: scaleIn 0.6s ease;
+            max-width: 100%;
         }
 
         @keyframes scaleIn {
@@ -451,8 +454,10 @@
         }
 
         .surprise-gif {
-            width: 400px;
-            height: 400px;
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            aspect-ratio: 1;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(255, 105, 180, 0.5);
             margin-bottom: 30px;
@@ -473,51 +478,130 @@
             font-style: italic;
         }
 
+        /* Mobile Responsive */
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
             .envelope-wrapper {
-                width: 280px;
+                max-width: 280px;
                 height: 210px;
+                margin-bottom: 30px;
+            }
+
+            .btn {
+                padding: 12px 25px;
+                font-size: 16px;
+            }
+
+            .btn-dodge {
+                bottom: 60px;
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+
+            .arrow-message {
+                bottom: -60px;
+                font-size: 12px;
+                white-space: normal;
+                max-width: 200px;
+                text-align: center;
             }
 
             .letter {
-                padding: 30px 20px;
+                padding: 25px 15px;
+                border-radius: 15px;
+            }
+
+            .letter-title {
+                font-size: 24px;
+            }
+
+            .letter-content {
+                padding: 20px;
+                font-size: 14px;
+            }
+
+            .letter-content::before,
+            .letter-content::after {
+                font-size: 30px;
+                top: 300px;
             }
 
             .photo-frame {
                 width: 100%;
                 max-width: 280px;
+                height: 180px;
                 margin: 10px 0 !important;
+                transform: rotate(0deg) !important;
             }
 
-            .photo-frame:first-child,
-            .photo-frame:last-child {
-                transform: rotate(0deg);
+            .photo-frame:hover {
+                transform: rotate(0deg) scale(1.02) !important;
             }
 
             .photos-container {
                 flex-direction: column;
+                gap: 15px;
+                min-height: auto;
             }
 
             .buttons {
                 flex-direction: column;
                 align-items: center;
+                gap: 15px;
             }
 
-            .arrow-message {
-                bottom: -60px;
+            .btn-surprise {
+                padding: 12px 30px;
+                font-size: 16px;
             }
 
             .surprise-gif {
-                width: 300px;
-                height: 300px;
+                max-width: 280px;
             }
 
             .surprise-message {
-                font-size: 28px;
+                font-size: 24px;
             }
 
             .surprise-submessage {
+                font-size: 18px;
+                padding: 0 10px;
+            }
+
+            .explosion-heart {
+                font-size: 35px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .envelope-wrapper {
+                max-width: 240px;
+                height: 180px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+
+            .letter-title {
                 font-size: 20px;
+            }
+
+            .letter-content {
+                font-size: 13px;
+                padding: 15px;
+            }
+
+            .surprise-message {
+                font-size: 20px;
+            }
+
+            .surprise-submessage {
+                font-size: 16px;
             }
         }
     </style>
@@ -531,9 +615,10 @@
             </div>
         </div>
 
+        <button class="btn btn-dodge" id="dodgeBtn">Maybe Later...</button>
+
         <div class="buttons">
             <button class="btn btn-open" id="openBtn">Open Me ♡</button>
-            <button class="btn btn-dodge" id="dodgeBtn">Maybe Later...</button>
             <div class="arrow-message" id="arrowMessage">Eme lang eto talaga yung button</div>
         </div>
     </div>
@@ -561,7 +646,7 @@
                 <br>
                 <p>Couple challenge? Not only that, meeting you was the most beautiful thing that ever happened to me. You've made my life so much brighter and more meaningful. Hanggang ngayon masaya parin naman ako syempre, you're still letting me feel your presence and having some small moments together that make me smile. Yung mga chismis natin together, our disappointments to those, our laughs, everything HAHAHAHAHAHA. Ang cute lang. I also wanna thank you kasi nakilala kita and of course gaya nga ng sinabi ko before I still want to know you more and I hope this doesn't make you feel uncomfortable or anything. I just want to say that I'm so grateful to have you in my life and I hope we can continue to get more chismis and talk about it together. We trade, good trade. HAHAHAHAHAHAHAHAHA</p>
                 <br>
-                <p>I have so much to tell you pero hindi ko na siya mabuo sa isip ko, kasi kinakabahan ako kung kaya ko ba talagang isend to sayo HAHAHAHAHA pero kung nababasa mo na 'tong letter na 'to, ibig sabihin nabigay ko na siya sayo. :P</p>
+                <p>I have so much to tell you pero hindi ko na siya mabuo sa isip ko, kasi kinakabahan ako kung kaya ko ba talagang isend to sayo HAHAHAHAHA pero kung nababasa mo na 'tong letter na 'to, ibig sabihin nabigay ko na siya sayo. You might want to finish the song or click mo yung surprise after mo mabasa, things are up you! ><</p>
                 <br>
                 <p style="text-align: right;"><strong>Yours truly,<br>Eis ♡</strong></p>
             </div>
@@ -630,14 +715,14 @@
 
         // Heart explosion function
         function createHeartExplosion() {
-            const heartsCount = 40;
+            const heartsCount = window.innerWidth < 768 ? 25 : 40;
             for (let i = 0; i < heartsCount; i++) {
                 const heart = document.createElement('div');
                 heart.className = 'explosion-heart';
                 heart.textContent = '💕';
 
                 const angle = (Math.PI * 2 * i) / heartsCount;
-                const distance = 300 + Math.random() * 300;
+                const distance = window.innerWidth < 768 ? 200 + Math.random() * 200 : 300 + Math.random() * 300;
                 const tx = Math.cos(angle) * distance;
                 const ty = Math.sin(angle) * distance;
 
@@ -698,8 +783,8 @@
             const maxAttempts = 50;
             
             do {
-                randomX = Math.random() * (window.innerWidth - btn.offsetWidth - 40);
-                randomY = Math.random() * (window.innerHeight - btn.offsetHeight - 40);
+                randomX = Math.random() * (window.innerWidth - btn.offsetWidth - 40) + 20;
+                randomY = Math.random() * (window.innerHeight - btn.offsetHeight - 40) + 20;
                 attempts++;
                 
                 const btnRight = randomX + btn.offsetWidth;
