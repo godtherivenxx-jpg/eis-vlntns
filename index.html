@@ -775,10 +775,16 @@
             surprisePage.classList.add('show');
         });
 
-        // Dodge button - moves away from cursor/touch
+        // Dodge button - moves away from cursor/touch (FIXED VERSION)
         function moveButton() {
             const btn = dodgeBtn;
             const envelopeRect = envelopeWrapper.getBoundingClientRect();
+            
+            // CAPTURE ORIGINAL SIZE BEFORE MOVING
+            if (!btn.dataset.originalWidth) {
+                btn.dataset.originalWidth = btn.offsetWidth + 'px';
+                btn.dataset.originalHeight = btn.offsetHeight + 'px';
+            }
             
             let randomX, randomY;
             let attempts = 0;
@@ -804,6 +810,8 @@
             } while (attempts < maxAttempts);
 
             btn.style.position = 'fixed';
+            btn.style.width = btn.dataset.originalWidth;      // PREVENTS WIDTH STRETCH
+            btn.style.height = btn.dataset.originalHeight;    // PREVENTS HEIGHT STRETCH
             btn.style.left = randomX + 'px';
             btn.style.top = randomY + 'px';
             btn.style.transition = 'all 0.3s ease';
@@ -831,6 +839,3 @@
     </script>
 </body>
 </html>
-
-
-
